@@ -1,7 +1,7 @@
 /***********************************************
  * Book.hpp
- * Created by Matthew D Mayberry on 3/11/15
- * CS161_400_W2015_Final_Project
+ * Created by you sheng chang
+ * 
  ***********************************************/
 
 #ifndef BOOK_HPP

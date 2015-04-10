@@ -1,8 +1,7 @@
 /***********************************************
  * Menu.cpp
- * Created by Matthew D Mayberry on 3/11/15
- * CS161_400_W2015_Final_Project
- ***********************************************/
+ * Created by you sheng chang
+ ************************************************/
 
 #include <iostream>
 #include "Book.hpp"

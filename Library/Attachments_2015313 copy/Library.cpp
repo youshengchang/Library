@@ -11,7 +11,6 @@
 
 using namespace std;
 
-void displayHoldings(Library *lib);
 
 Library::Library()
 {
@@ -45,9 +44,10 @@ void Library::addBook()
     holdings.push_back(*book);
     
     cout << "holdings has: " << endl;
-    for(int i = 0; i < holdings.size(); ++i){
+    for(int i = 0; i < (int)(holdings.size()); ++i){
         cout << holdings[i].getAuthor() << endl;
-        cout << &holdings[i] << endl;
+        cout << holdings[i].getTitle() << endl;
+        cout << holdings[i].getIdCode() << endl;
     }
     
     
@@ -66,7 +66,7 @@ void Library::addMember()
     cout << "Input patron's name: " << endl;
     cin.getline(buf, sizeof(buf));
     name = buf;
-    cout << "Inpute the patron's id: " << endl;
+    cout << "Input the patron's id: " << endl;
     cin.getline(buf, sizeof(buf));
     idNum = buf;
     cout << "name: " << name << " id: " << idNum << endl;
@@ -74,7 +74,7 @@ void Library::addMember()
     members.push_back(*patron);
     
     cout << "The library has members: " << endl;
-    for(int i = 0; i < members.size(); ++i){
+    for(int i = 0; i < (int)(members.size()); ++i){
         cout << members[i].getName() << endl;
         cout << &members[i] << endl;
     }
@@ -83,19 +83,15 @@ void Library::addMember()
 
 void Library::checkOutBook(string patronID, string bookID)
 {
-    vector<Book>::iterator it;
-    vector<Book>::iterator position;
-    string bookId;
+
+
     bool findBook = false;
-    vector<Patron>::iterator pt;
     bool findPatron = false;
-    string pId;
-    Book book;
-    Patron patron;
-    int memberPos = 0, bookPos = 0;
+    int memberPos = 0;
+
     cout << "Input patronID: " << patronID << " bookID: " << bookID << endl;
     
-    for(int i = 0; members.size(); ++i){
+    for(int i = 0; (int)(members.size()); ++i){
         if(patronID == members[i].getIdNum()){
             findPatron = true;
             memberPos = i;
@@ -108,10 +104,11 @@ void Library::checkOutBook(string patronID, string bookID)
         cout << "Patron is not registered in this library." << endl;
         return;
     }
-    for(int i = 0; i < holdings.size(); ++i){
+
+    for(int i = 0; i < (int)(holdings.size()); ++i){
         if(bookID == holdings[i].getIdCode() && holdings[i].getLocation() == ON_SHELF){
             findBook = true;
-            bookPos = i;
+
             holdings[i].setCheckedOutBy(&members[memberPos]);
             holdings[i].setDateCheckedOut(currentDate);
             holdings[i].setLocation(CHECKED_OUT);
@@ -121,7 +118,7 @@ void Library::checkOutBook(string patronID, string bookID)
         else if(bookID == holdings[i].getIdCode() && holdings[i].getLocation() == ON_HOLD_SHELF){
             if (holdings[i].getRequestedBy() == &members[memberPos]) {
                 findBook = true;
-                bookPos = i;
+
                 holdings[i].setCheckedOutBy(&members[memberPos]);
                 holdings[i].setDateCheckedOut(currentDate);
                 holdings[i].setLocation(CHECKED_OUT);
@@ -156,27 +153,22 @@ void Library::checkOutBook(string patronID, string bookID)
 
 void Library::returnBook(string bookID)
 {
-    vector<Book>::iterator it;
-    vector<Book>::iterator position;
-    string bookId;
+
+
     bool findBook = false;
-    vector<Patron>::iterator pt;
     bool findPatron = false;
-    string pId;
-    Book book;
-    Patron *patron;
-    int bookPos;
     
-    for(int i = 0; i < holdings.size(); ++i){
+
+    for(int i = 0; i < (int)(holdings.size()); ++i){
         if (bookID == holdings[i].getIdCode() && holdings[i].getLocation() == CHECKED_OUT) {
             findBook = true;
-            bookPos = i;
-            patron = holdings[i].getCheckedOutBy();
-            for (int j = 0; j< members.size(); ++j) {
+
+
+            for (int j = 0; j< (int)(members.size()); ++j) {
                 if(members[j].getIdNum() == holdings[i].getCheckedOutBy()->getIdNum()){
                     findPatron = true;
                     holdings[i].setCheckedOutBy(NULL);
-                    holdings[i].setDateCheckedOut(NULL);
+                    holdings[i].setDateCheckedOut(0);
                     holdings[i].setLocation(ON_SHELF);
                     members[j].removeBook(&holdings[i]);
                     return;
@@ -204,18 +196,11 @@ void Library::returnBook(string bookID)
 
 void Library::requestBook(string patronID, string bookID)
 {
-    vector<Book>::iterator it;
-    vector<Book>::iterator position;
-    string bookId;
     bool findBook = false;
-    vector<Patron>::iterator pt;
     bool findPatron = false;
-    string pId;
-    Book book;
-    Patron patron;
     int patronPos = 0;
     
-    for(int i = 0; i < members.size(); ++i){
+    for(int i = 0; i < (int)(members.size()); ++i){
         if(patronID == members[i].getIdNum()){
             findPatron = true;
             patronPos = i;
@@ -227,12 +212,12 @@ void Library::requestBook(string patronID, string bookID)
         cout << "Patron is not registered in this library." << endl;
         return;
     }
-    for(int i = 0; i < holdings.size(); ++i){
+    for(int i = 0; i < (int)(holdings.size()); ++i){
         if(bookID == holdings[i].getIdCode() && holdings[i].getLocation() == ON_SHELF){
             findBook = true;
             holdings[i].setRequestedBy(&members[patronPos]);
             holdings[i].setLocation(ON_HOLD_SHELF);
-            cout << "The book is requested by the Patron: " << patron.getName() << endl;
+            cout << "The book is requested by the Patron: " << members[patronPos].getName() << endl;
             return;
 
             
@@ -255,33 +240,28 @@ void Library::requestBook(string patronID, string bookID)
             }
         }
         
-        
     }
+
     if(findBook == false)
         cout << "Book not found." << endl;
-  
+
 }
 
 void Library::incrementCurrentDate()
 {
-    vector<Patron>::iterator it;
-    vector<Patron>::iterator start;
-    vector<Patron>::iterator end;
-    string id;
-    Book book;
+
+
     vector<Book *> listOfCheckedOut;
-    vector<Book*>::iterator bIt;
     int checkedOutDate;
     int checkedOutDays;
     
     
-    start = members.begin();
-    end = members.end();
+
     currentDate++;
     
-    for(int i = 0; i < members.size(); ++i){
+    for(int i = 0; i < (int)members.size(); ++i){
         listOfCheckedOut = members[i].getCheckedOutBooks();
-        for (int j = 0; j < listOfCheckedOut.size(); ++j) {
+        for (int j = 0; j < (int)(listOfCheckedOut.size()); ++j) {
             checkedOutDate = listOfCheckedOut[j]->getDateCheckedOut();
             checkedOutDays = currentDate - checkedOutDate;
             if(checkedOutDays > Book::CHECK_OUT_LENGTH){
@@ -296,16 +276,10 @@ void Library::incrementCurrentDate()
 
 void Library::payFine(string patronID, double payment)
 {
-    vector<Patron>::iterator it;
-    vector<Patron>::iterator start;
-    vector<Patron>::iterator end;
-    string id;
+
+
     bool findPatron = false;
-    
-    start = members.begin();
-    end = members.end();
-    
-    for(int i = 0; i < members.size(); ++i){
+    for(int i = 0; i < (int)(members.size()); ++i){
         if(patronID == members[i].getIdNum()){
             findPatron = true;
             members[i].amendFine(-payment);
@@ -328,26 +302,18 @@ void Library::viewPatronInfo(string patronID)
 {
     cout << "viewPatronInfo: " << endl;
     cout << "number of patrons: " << members.size() << endl;
-    
-    vector<Patron>::iterator it;
-    vector<Patron>::iterator start;
-    vector<Patron>::iterator end;
-    string id;
+
     bool find = false;
     vector<Book*> listOfChckedOut;
-    vector<Book*>::iterator bIt;
     
     
-    start = members.begin();
-    end = members.end();
-    
-    for(int i = 0; i < members.size(); ++i){
+    for(int i = 0; i < (int)(members.size()); ++i){
         if (patronID == members[i].getIdNum()) {
             listOfChckedOut = members[i].getCheckedOutBooks();
             cout << "Patron name: " << members[i].getName() << endl;
             cout << "Patron ID: " << members[i].getIdNum() << endl;
             cout << "List of checked out books: " << endl;
-            for (int j = 0; j < listOfChckedOut.size(); ++j) {
+            for (int j = 0; j < (int)(listOfChckedOut.size()); ++j) {
                 cout << "Book title: " << listOfChckedOut[j]->getTitle() << endl;
             }
             cout << "Library fine: " << members[i].getFineAmount() << endl;
@@ -365,13 +331,7 @@ void Library::viewPatronInfo(string patronID)
 
 void Library::viewBookInfo(string bookID)
 {
- 
-    vector<Book>::iterator it;
-    vector<Book>::iterator start;
-    vector<Book>::iterator end;
-    start = holdings.begin();
-    end = holdings.end();
-    string id;
+
     Patron *patron;
     bool find = false;
     int dateOfCheckOut;
@@ -379,7 +339,7 @@ void Library::viewBookInfo(string bookID)
     
     
 
-    for(int i = 0; i < holdings.size(); ++i){
+    for(int i = 0; i < (int)(holdings.size()); ++i){
         if(bookID == holdings[i].getIdCode()){
             find = true;
             cout << "bookId: " << holdings[i].getIdCode() << endl;
@@ -403,14 +363,14 @@ void Library::viewBookInfo(string bookID)
             
         }
     }
-        if(find == false){
-        
-        cout << "There is no this book in the library." << endl;
-        return;
+
+}
+    if(find == false){
+
+            cout << "There is no this book in the library." << endl;
+            return;
     }
     
-}
-
 
     
 }

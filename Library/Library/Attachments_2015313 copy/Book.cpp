@@ -14,7 +14,6 @@ Book::Book()
     checkedOutBy = NULL;
     requestedBy = NULL;
     location = ON_SHELF;
-    dateCheckedOut = 0;
     
 }
 
@@ -23,7 +22,6 @@ Book::Book(string idc, string t, string a)
     idCode = idc;
     title = t;
     author = a;
-    dateCheckedOut = 0;
     checkedOutBy = NULL;
     requestedBy = NULL;
     location = ON_SHELF;

@@ -9,13 +9,14 @@ using namespace std;
 
 Patron::Patron()
 {
-
+	fineAmount = 0;
 }
 
 Patron::Patron(string idn, string n)
 {
     idNum = idn;
     name = n;
+    fineAmount = 0;
 }
 
 string Patron::getIdNum()

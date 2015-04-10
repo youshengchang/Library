@@ -92,7 +92,7 @@ void Library::checkOutBook(string patronID, string bookID)
     string pId;
     Book book;
     Patron patron;
-    int memberPos, bookPos;
+    int memberPos = 0, bookPos = 0;
     cout << "Input patronID: " << patronID << " bookID: " << bookID << endl;
     
     for(int i = 0; members.size(); ++i){
@@ -213,7 +213,7 @@ void Library::requestBook(string patronID, string bookID)
     string pId;
     Book book;
     Patron patron;
-    int patronPos;
+    int patronPos = 0;
     
     for(int i = 0; i < members.size(); ++i){
         if(patronID == members[i].getIdNum()){
@@ -253,14 +253,13 @@ void Library::requestBook(string patronID, string bookID)
                 cout << "the book is not available." << endl;
                 return;
             }
-        }else{
-            cout << "Book not found." << endl;
-            return;
         }
         
+        
     }
-
-   
+    if(findBook == false)
+        cout << "Book not found." << endl;
+  
 }
 
 void Library::incrementCurrentDate()
@@ -285,7 +284,7 @@ void Library::incrementCurrentDate()
         for (int j = 0; j < listOfCheckedOut.size(); ++j) {
             checkedOutDate = listOfCheckedOut[j]->getDateCheckedOut();
             checkedOutDays = currentDate - checkedOutDate;
-            if(checkedOutDays > listOfCheckedOut[j]->CHECK_OUT_LENGTH){
+            if(checkedOutDays > Book::CHECK_OUT_LENGTH){
                 members[i].amendFine(0.1);
             }
         }
@@ -397,7 +396,7 @@ void Library::viewBookInfo(string bookID)
                 cout <<"Patron: " << patron->getName() << "has checked out this book." << endl;
                 dateOfCheckOut = holdings[i].getDateCheckedOut();
                 daysOfCheckedOut = currentDate - dateOfCheckOut;
-                int daysLeft = holdings[i].CHECK_OUT_LENGTH - daysOfCheckedOut;
+                int daysLeft = Book::CHECK_OUT_LENGTH - daysOfCheckedOut;
                 (daysLeft >=0)?(cout << "there is " << daysLeft << " due." << endl):(cout << "It is over due by " << -daysLeft << endl);
                 
 

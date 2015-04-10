@@ -8,7 +8,7 @@
 #include "Patron.hpp"
 using namespace std;
 
-static const int CHECK_OUT_LENGTH = 21;
+
 Book::Book()
 {
     checkedOutBy = NULL;
